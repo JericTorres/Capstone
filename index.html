@@ -493,42 +493,38 @@
   </footer>
 
   
-<!-- CHATBOT TOGGLE BUTTON -->
+<!-- Chatbot Toggle Button -->
 <button id="chatbot-toggle-btn" aria-label="Open AI Assistant">
   💬
 </button>
 
 <!-- Chatbot Container -->
-<div id="chatbot-container" aria-hidden="true"
-     style="display:none; position: fixed; bottom: 70px; right: 20px; width: 350px; max-width: 90%; height: 500px; background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.25); border-radius: 10px; display: flex; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; z-index: 10000; font-family: 'Segoe UI', sans-serif;">
+<div id="chatbot-container" aria-hidden="true">
   
   <!-- Header -->
-  <header style="padding: 12px 16px; background-color: #007bff; color: white; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 10px; border-top-right-radius: 10px;">
-    <h3 style="margin: 0; font-size: 16px;">LIS Chatbot</h3>
-    <button id="chatbot-close-btn" aria-label="Isara ang Chatbot"
-            style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;">×</button>
+  <header id="chatbot-header">
+    <h3>LIS Chatbot</h3>
+    <button id="chatbot-close-btn" aria-label="Isara ang Chatbot">×</button>
   </header>
-
-  <!-- Message Area -->
-  <div id="chatbot-messages"
-       style="flex-grow: 1; padding: 10px; overflow-y: auto; background-color: #f9f9f9; font-size: 14px;">
-    <!-- Dynamic messages appear here -->
+  
+  <!-- Messages -->
+  <div id="chatbot-messages">
+    <!-- Dynamic messages will appear here -->
   </div>
-
-  <!-- Form -->
-  <form id="chatbot-form"
-        style="display: flex; padding: 10px; border-top: 1px solid #ccc; background: #fff;">
-    <input type="text" id="chatbot-input"
-           placeholder="I-type ang iyong tanong..."
-           style="flex-grow: 1; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;" autocomplete="off" />
-    <button type="submit"
-            style="margin-left: 8px; padding: 8px 14px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Send</button>
+  
+  <!-- Quick Replies -->
+  <div id="quick-replies">
+    <!-- Buttons injected via JavaScript -->
+  </div>
+  
+  <!-- Input Form -->
+  <form id="chatbot-form">
+    <input type="text" id="chatbot-input" placeholder="I-type ang iyong tanong..." autocomplete="off" />
+    <button type="submit">Send</button>
   </form>
+  
 </div>
 
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Preloader -->
   <div id="preloader"></div>
