@@ -1463,72 +1463,156 @@ section,
   }
 }
 
-/* Chatbot Styles */
 /* Chatbot Toggle Button */
 #chatbot-toggle-btn {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   border: none;
   background-color: #007bff;
-  color: white;
-  font-size: 28px;
+  color: #fff;
+  font-size: 24px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
   z-index: 10001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: background-color 0.3s ease;
+}
+#chatbot-toggle-btn:hover {
+  background-color: #0056b3;
 }
 
 /* Chatbot Container */
 #chatbot-container {
   position: fixed;
-  bottom: 90px;
+  bottom: 85px;
   right: 20px;
-  width: 380px;
+  width: 360px;
   max-width: 95vw;
   height: 520px;
-  background: white;
+  background-color: #f0f6ff;
   border-radius: 15px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-  overflow: hidden;
-  display: none;
+  box-shadow: 0 12px 30px rgba(0, 123, 255, 0.3);
+  display: flex;
   flex-direction: column;
-  z-index: 10000;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease;
+  z-index: 10000;
+}
+#chatbot-container.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Chatbot Header */
 #chatbot-header {
   background-color: #007bff;
-  color: white;
-  padding: 12px 20px;
+  color: #fff;
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 600;
-  font-size: 18px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
 }
-
-/* Close Button */
+#chatbot-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
 #chatbot-close-btn {
-  background: transparent;
+  background: none;
   border: none;
-  font-size: 24px;
-  color: white;
+  font-size: 22px;
   cursor: pointer;
-  line-height: 1;
+  color: #fff;
 }
 
-/* Chatbot iframe */
-#chatbot-iframe {
-  flex-grow: 1;
-  border: none;
-  width: 100%;
+/* Messages Area */
+#chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  background-color: #eaf2ff;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
+.user-message,
+.bot-message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 20px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.user-message {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+}
+.bot-message {
+  align-self: flex-start;
+  background-color: #d9eaff;
+  color: #003e7e;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.15);
+}
+
+/* Quick Replies */
+#quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid #c9dfff;
+  background: #f5faff;
+}
+#quick-replies button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s ease;
+}
+#quick-replies button:hover {
+  background-color: #0056b3;
+}
+
+/* Input Form */
+#chatbot-form {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #c9dfff;
+  background: #f5faff;
+}
+#chatbot-form input {
+  flex: 1;
+  border: 1px solid #a8cfff;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 14px;
+  outline: none;
+  background-color: #fff;
+}
+#chatbot-form button {
+  margin-left: 8px;
+  padding: 8px 14px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+#chatbot-form button:hover {
+  background-color: #0056b3;
+}
+
