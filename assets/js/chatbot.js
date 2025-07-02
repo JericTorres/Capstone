@@ -94,22 +94,23 @@ function getBotReply(message) {
     return greeting;
   }
 
-  // Regex to check if any keyword matches (with fuzzy matching)
+  // Regex to check for keyword matches (with fuzzy matching)
   const keywords = {
-    "announcement": ["announcement", "announcment", "notices", "updates", "news", "announcement page", "where can i find news", "find announcements"],
-    "tuition": ["tuition", "tution", "fees", "bayarin", "cost", "how much is tuition", "how much for tuition", "fees details"],
-    "admission": ["admission", "requirements", "enrollment", "school entry", "entry", "admission details", "how to enroll"],
-    "events": ["events", "activities", "event", "school events", "activities", "upcoming events", "school activities"],
-    "location": ["location", "address", "where", "saan", "where is", "located", "where's", "school location", "school address"],
-    "teachers": ["teachers", "faculty", "staff", "instructors", "teacher info", "who are the teachers", "teachers list"],
-    "holidays": ["holidays", "vacation", "break", "school break", "holiday schedule", "list of holidays"],
-    "motto": ["motto", "slogan", "school motto", "school mission", "our motto"],
-    "contact": ["contact", "email", "phone", "reach us", "contact info", "how to contact", "how to reach the school", "contact details"],
+    "announcement": ["announcement", "announcment", "notices", "updates", "news", "announcement page", "where can i find news", "find announcements", "how to find announcements", "where are announcements", "where to see announcements"],
+    "tuition": ["tuition", "tution", "fees", "bayarin", "cost", "how much is tuition", "how much for tuition", "fees details", "tuition fees", "how to check tuition"],
+    "admission": ["admission", "requirements", "enrollment", "school entry", "entry", "admission details", "how to enroll", "how to apply for admission"],
+    "events": ["events", "activities", "event", "school events", "activities", "upcoming events", "school activities", "how to view school events"],
+    "location": ["location", "address", "where", "saan", "where is", "located", "where's", "school location", "school address", "how to find school location", "where is the school"],
+    "teachers": ["teachers", "faculty", "staff", "instructors", "teacher info", "who are the teachers", "teachers list", "list of teachers", "faculty members"],
+    "holidays": ["holidays", "vacation", "break", "school break", "holiday schedule", "list of holidays", "when are the holidays"],
+    "motto": ["motto", "slogan", "school motto", "school mission", "our motto", "what is the school motto"],
+    "contact": ["contact", "email", "phone", "reach us", "contact info", "how to contact", "how to reach the school", "contact details", "how to get in touch", "contact email", "contact phone"],
     "academic calendar": ["academic calendar", "school year", "year schedule", "school calendar", "academic schedule", "school timetable", "when does the school year start", "when is the school year"]
   };
 
-  // Check for keywords and respond
+  // Check for matching keyword and respond accordingly
   for (let key in keywords) {
+    // Check if any of the keyword variations is present anywhere in the message
     if (keywords[key].some(keyword => msgLower.includes(keyword))) {
       return generateResponse(key);
     }
@@ -121,7 +122,7 @@ function getBotReply(message) {
 function generateResponse(keyword) {
   switch (keyword) {
     case "announcement":
-      return "You can check the announcements in the 'Announcements' section of the website or app.";
+      return "You can check the announcements in the 'Announcements' section of the website.";
     case "tuition":
       return "Please coordinate with the registrar for the updated tuition and other fees.";
     case "admission":
