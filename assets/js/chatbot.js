@@ -7,20 +7,16 @@ const chatbotMessages = document.getElementById('chatbot-messages');
 const quickRepliesDiv = document.getElementById('quick-replies');
 
 let isTagalogMode = false;
-let userName = "";
 
-// Load language mode
 function loadLanguageMode() {
   const stored = sessionStorage.getItem('isTagalogMode');
   if (stored) isTagalogMode = stored === 'true';
 }
 
-// Set language mode
 function setLanguageMode() {
   sessionStorage.setItem('isTagalogMode', isTagalogMode);
 }
 
-// Append message to chat
 function appendMessage(sender, message) {
   const div = document.createElement('div');
   div.className = sender === 'LIS Bot' ? 'bot-message' : 'user-message';
@@ -29,25 +25,15 @@ function appendMessage(sender, message) {
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
 
-// Display quick replies
 function displayQuickReplies() {
   quickRepliesDiv.innerHTML = `
     <button data-reply="announcements">Announcements</button>
-    <button data-reply="programs">Programs</button>
     <button data-reply="location">Location</button>
     <button data-reply="contact">Contact</button>
     <button data-reply="academic calendar">Academic Calendar</button>
     <button data-reply="tuition">Tuition</button>
-    <button data-reply="clubs">Clubs</button>
-    <button data-reply="resources">Resources</button>
-    <button data-reply="admission requirements">Admission</button>
-    <button data-reply="enrollment">Enrollment</button>
     <button data-reply="events">School Events</button>
     <button data-reply="teachers">Teachers</button>
-    <button data-reply="holidays">Holidays</button>
-    <button data-reply="motto">School Motto</button>
-    <button data-reply="name">What's your name?</button>
-    <button data-reply="how are you">How are you?</button>
   `;
 }
 
@@ -57,7 +43,6 @@ quickRepliesDiv.addEventListener("click", e => {
   }
 });
 
-// Handle quick reply
 function handleQuickReply(reply) {
   appendMessage("You", reply);
   let message = "";
@@ -65,9 +50,6 @@ function handleQuickReply(reply) {
   switch (reply) {
     case "announcements":
       message = "Makikita ang mga announcements sa Announcements / News section sa menu.";
-      break;
-    case "programs":
-      message = "Nag-aalok kami ng programs mula Kindergarten hanggang Senior High School.";
       break;
     case "location":
       message = "2435 Marigold St., Lakeview Homes Subd., Putatan, Muntinlupa City.";
@@ -81,35 +63,11 @@ function handleQuickReply(reply) {
     case "tuition":
       message = "Ang tuition fees ay depende sa grade level. Makipag-ugnayan sa registrar para sa details.";
       break;
-    case "clubs":
-      message = "May sports club, science club, art club, at marami pang iba. Magtanong sa guidance office.";
-      break;
-    case "resources":
-      message = "Learning materials ay nasa Resources section ng website.";
-      break;
-    case "admission requirements":
-      message = "Magdala ng birth certificate, report card, at 2x2 picture para sa admission.";
-      break;
-    case "enrollment":
-      message = "Ang enrollment period ay kadalasang Mayo hanggang Hunyo. I-check ang announcements para sa petsa.";
-      break;
     case "events":
       message = "I-check ang Events section ng website para sa upcoming school activities.";
       break;
     case "teachers":
       message = "Ang aming mga guro ay may malawak na karanasan at dedikasyon sa pagtuturo. Magtanong sa school office para sa listahan ng faculty.";
-      break;
-    case "holidays":
-      message = "I-check ang Announcements section para sa listahan ng mga holidays at school breaks.";
-      break;
-    case "motto":
-      message = "Ang aming motto: 'Education for a brighter future'.";
-      break;
-    case "name":
-      message = "Ang pangalan ko ay LIS Bot! Ano ang pangalan mo?";
-      break;
-    case "how are you":
-      message = "I'm doing great, thank you for asking! How about you? Kamusta ka?";
       break;
     default:
       message = "Pasensya na, wala akong impormasyon tungkol diyan.";
@@ -117,7 +75,6 @@ function handleQuickReply(reply) {
   appendMessage("LIS Bot", message);
 }
 
-// Get bot reply
 function getBotReply(message) {
   const currentHour = new Date().getHours();
   let greeting = "Hello! How can I help you today?";
@@ -127,46 +84,58 @@ function getBotReply(message) {
 
   const msgLower = message.toLowerCase();
 
-  // Handle greetings
-  if (["hi", "hello", "kumusta", "hey", "how are you", "kamusta ka", "how's it going", "what's up"].some(word => msgLower.includes(word))) {
-    if (msgLower.includes("how are you") || msgLower.includes("kamusta")) {
-      return "I'm doing great, thank you for asking! How about you? Kamusta ka?";
-    }
-    return greeting;
-  }
-
-  // Handle name question
-  if (msgLower.includes("what's your name") || msgLower.includes("who are you")) {
-    return "My name is LIS Bot! How can I assist you today?";
-  }
-
-  // Handle casual conversation
-  if (msgLower.includes("what's up") || msgLower.includes("how's it going")) {
-    return "I'm here to help you with anything you need. What would you like to know today?";
-  }
-
-  // Handle small talk
-  if (msgLower.includes("good morning") || msgLower.includes("good afternoon") || msgLower.includes("good evening")) {
-    return `Good day to you too! How can I assist you?`;
-  }
-
   // Handle "thank you" responses
   if (/(thank\s?you|thanks|salamat)/i.test(msgLower)) {
     return "You're welcome! Nandito lang ako kung kailangan mo pa ng tulong.";
   }
 
-  // Handle admission or related queries
-  if (/(admission|enrollment|requirements|school entry|pagpasok)/i.test(msgLower)) {
-    return "For admission, please provide your birth certificate, report card, and a 2x2 photo. Enrollment typically happens from May to June.";
+  // Handle greetings
+  if (["hi", "hello", "kumusta", "hey", "how are you", "kamusta ka"].some(word => msgLower.includes(word))) {
+    return greeting;
   }
 
-  // Handle "school events" queries
-  if (msgLower.includes("events") || msgLower.includes("activities") || msgLower.includes("school events")) {
-    return "Check the Events section of our website for the latest school activities and events.";
+  // Fuzzy Matching (Levenshtein Distance) for better typo tolerance
+  const keywords = {
+    "announcement": ["announcement", "announcment", "notices", "updates", "news"],
+    "tuition": ["tuition", "tution", "fees", "bayarin", "cost"],
+    "admission": ["admission", "requirements", "enrollment", "school entry", "entry"],
+    "events": ["events", "activities", "event", "school events", "activities"],
+    "location": ["location", "address", "where", "saan", "where is", "located", "where's"],
+    "teachers": ["teachers", "faculty", "staff", "instructors"],
+    "holidays": ["holidays", "vacation", "break", "school break"],
+    "motto": ["motto", "slogan", "school motto", "school mission"]
+  };
+
+  for (let key in keywords) {
+    if (keywords[key].some(keyword => msgLower.includes(keyword))) {
+      return generateResponse(key);
+    }
   }
 
-  // Handle unknown queries
-  return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa enrollment, tuition, programs, o facilities.";
+  return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa announcements, enrollment, tuition, o school events.";
+}
+
+function generateResponse(keyword) {
+  switch (keyword) {
+    case "announcement":
+      return "You can check the announcements in the 'Announcements' section of the website or app.";
+    case "tuition":
+      return "Please coordinate with the registrar for the updated tuition and other fees.";
+    case "admission":
+      return "For admission, please provide your birth certificate, report card, and a 2x2 photo. Enrollment typically happens from May to June.";
+    case "events":
+      return "Check the Events section of our website for the latest school activities and events.";
+    case "location":
+      return "We are located at 2435 Marigold St., Lakeview Homes, Putatan, Muntinlupa City.";
+    case "teachers":
+      return "For teacher contact info, please check with the school office or faculty directory.";
+    case "holidays":
+      return "You can check the Announcements section for the list of school holidays and breaks.";
+    case "motto":
+      return "Our school motto is: 'Education for a brighter future'.";
+    default:
+      return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa announcements, enrollment, tuition, o school events.";
+  }
 }
 
 // Toggle open
