@@ -7,15 +7,20 @@ const chatbotMessages = document.getElementById('chatbot-messages');
 const quickRepliesDiv = document.getElementById('quick-replies');
 
 let isTagalogMode = false;
+let userName = "";
 
+// Load language mode
 function loadLanguageMode() {
   const stored = sessionStorage.getItem('isTagalogMode');
   if (stored) isTagalogMode = stored === 'true';
 }
+
+// Set language mode
 function setLanguageMode() {
   sessionStorage.setItem('isTagalogMode', isTagalogMode);
 }
 
+// Append message to chat
 function appendMessage(sender, message) {
   const div = document.createElement('div');
   div.className = sender === 'LIS Bot' ? 'bot-message' : 'user-message';
@@ -24,6 +29,7 @@ function appendMessage(sender, message) {
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
 
+// Display quick replies
 function displayQuickReplies() {
   quickRepliesDiv.innerHTML = `
     <button data-reply="announcements">Announcements</button>
@@ -36,6 +42,15 @@ function displayQuickReplies() {
     <button data-reply="resources">Resources</button>
     <button data-reply="admission requirements">Admission</button>
     <button data-reply="enrollment">Enrollment</button>
+    <button data-reply="events">School Events</button>
+    <button data-reply="teachers">Teachers</button>
+    <button data-reply="holidays">Holidays</button>
+    <button data-reply="motto">School Motto</button>
+    <button data-reply="name">What's your name?</button>
+    <button data-reply="how are you">How are you?</button>
+    <button data-reply="goodbye">Goodbye</button>
+    <button data-reply="help">Help</button>
+    <button data-reply="joke">Tell me a joke</button>
   `;
 }
 
@@ -45,6 +60,7 @@ quickRepliesDiv.addEventListener("click", e => {
   }
 });
 
+// Handle quick reply
 function handleQuickReply(reply) {
   appendMessage("You", reply);
   let message = "";
@@ -80,12 +96,40 @@ function handleQuickReply(reply) {
     case "enrollment":
       message = "Ang enrollment period ay kadalasang Mayo hanggang Hunyo. I-check ang announcements para sa petsa.";
       break;
+    case "events":
+      message = "I-check ang Events section ng website para sa upcoming school activities.";
+      break;
+    case "teachers":
+      message = "Ang aming mga guro ay may malawak na karanasan at dedikasyon sa pagtuturo. Magtanong sa school office para sa listahan ng faculty.";
+      break;
+    case "holidays":
+      message = "I-check ang Announcements section para sa listahan ng mga holidays at school breaks.";
+      break;
+    case "motto":
+      message = "Ang aming motto: 'Education for a brighter future'.";
+      break;
+    case "name":
+      message = "Ang pangalan ko ay LIS Bot! Ano ang pangalan mo?";
+      break;
+    case "how are you":
+      message = "I'm doing great, thank you for asking! How about you? Kamusta ka?";
+      break;
+    case "goodbye":
+      message = "Goodbye! Salamat sa iyong mga katanungan! Huwag kalimutan na pwede kang magtanong anytime.";
+      break;
+    case "help":
+      message = "I'm here to assist with questions about programs, tuition, enrollment, and more. How can I help?";
+      break;
+    case "joke":
+      message = "Why don't skeletons fight each other? They don't have the guts!";
+      break;
     default:
       message = "Pasensya na, wala akong impormasyon tungkol diyan.";
   }
   appendMessage("LIS Bot", message);
 }
 
+// Get bot reply
 function getBotReply(message) {
   const currentHour = new Date().getHours();
   let greeting = "Hello! How can I help you today?";
@@ -95,54 +139,50 @@ function getBotReply(message) {
 
   const msgLower = message.toLowerCase();
 
+  // Handle greetings
+  if (["hi", "hello", "kumusta", "hey", "how are you", "kamusta ka", "how's it going", "what's up"].some(word => msgLower.includes(word))) {
+    if (msgLower.includes("how are you") || msgLower.includes("kamusta")) {
+      return "I'm doing great, thank you for asking! How about you? Kamusta ka?";
+    }
+    return greeting;
+  }
+
+  // Handle name question
+  if (msgLower.includes("what's your name") || msgLower.includes("who are you")) {
+    return "My name is LIS Bot! How can I assist you today?";
+  }
+
+  // Handle casual conversation
+  if (msgLower.includes("what's up") || msgLower.includes("how's it going")) {
+    return "I'm here to help you with anything you need. What would you like to know today?";
+  }
+
+  // Handle small talk
+  if (msgLower.includes("good morning") || msgLower.includes("good afternoon") || msgLower.includes("good evening")) {
+    return `Good day to you too! How can I assist you?`;
+  }
+
+  // Handle "thank you" responses
   if (/(thank\s?you|thanks|salamat)/i.test(msgLower)) {
     return "You're welcome! Nandito lang ako kung kailangan mo pa ng tulong.";
   }
 
-  if (["hi", "hello", "kumusta", "hey", "how are you", "kamusta ka"].some(word => msgLower.includes(word))) {
-    return greeting;
+  // Handle admission or related queries
+  if (/(admission|enrollment|requirements|school entry|pagpasok)/i.test(msgLower)) {
+    return "For admission, please provide your birth certificate, report card, and a 2x2 photo. Enrollment typically happens from May to June.";
   }
 
-  if (msgLower.includes("school time") || msgLower.includes("oras ng klase") || msgLower.includes("class schedule")) {
-    return "Classes usually start at 8 AM and finish around 4 PM.";
+  // Handle "school events" queries
+  if (msgLower.includes("events") || msgLower.includes("activities") || msgLower.includes("school events")) {
+    return "Check the Events section of our website for the latest school activities and events.";
   }
 
-  if (msgLower.includes("academic calendar") || msgLower.includes("school year")) {
-    return "School year runs from June to March.";
+  // Handle "jokes"
+  if (msgLower.includes("joke")) {
+    return "Why don't skeletons fight each other? They don't have the guts!";
   }
 
-  if (msgLower.includes("tuition") || msgLower.includes("bayarin") || msgLower.includes("fees")) {
-    return "Please coordinate with the registrar for the updated tuition and other fees.";
-  }
-
-  if (msgLower.includes("clubs") || msgLower.includes("sports") || msgLower.includes("extracurricular")) {
-    return "We have a wide range of clubs: sports, arts, STEM, and others.";
-  }
-
-  if (msgLower.includes("admission") || msgLower.includes("enroll")) {
-    return "Requirements: birth certificate, report card, and 2x2 picture. Enrollment is usually in May-June.";
-  }
-
-  if (msgLower.includes("facilities") || msgLower.includes("clinic") || msgLower.includes("gym")) {
-    return "The school has a library, science labs, computer labs, a gymnasium, and a clinic.";
-  }
-
-  if (msgLower.includes("location") || msgLower.includes("saan")) {
-    return "We are located at 2435 Marigold St., Lakeview Homes, Putatan, Muntinlupa City.";
-  }
-
-  if (msgLower.includes("contact") || msgLower.includes("email") || msgLower.includes("phone")) {
-    return "Email: lakeviewintegratedschool@gmail.com, Phone: (02) 8999-0000.";
-  }
-
-  if (msgLower.includes("resources") || msgLower.includes("modules") || msgLower.includes("learning materials")) {
-    return "Visit our Resources page for downloadable modules and class notes.";
-  }
-
-  if (msgLower.includes("announcement")) {
-    return "Check our Announcements section for updates on events and news.";
-  }
-
+  // Handle unknown queries
   return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa enrollment, tuition, programs, o facilities.";
 }
 
@@ -164,7 +204,7 @@ chatbotCloseBtn.addEventListener('click', () => {
   chatbotContainer.setAttribute("aria-hidden", "true");
 });
 
-// Submit
+// Submit user input
 chatbotForm.addEventListener('submit', e => {
   e.preventDefault();
   const message = chatbotInput.value.trim();
