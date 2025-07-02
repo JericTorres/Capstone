@@ -7,10 +7,14 @@ const chatbotMessages = document.getElementById('chatbot-messages');
 const quickRepliesDiv = document.getElementById('quick-replies');
 
 let isTagalogMode = false;
+let isEnglishMode = true;  // Default mode is English
 
 function loadLanguageMode() {
   const stored = sessionStorage.getItem('isTagalogMode');
-  if (stored) isTagalogMode = stored === 'true';
+  if (stored) {
+    isTagalogMode = stored === 'true';
+    isEnglishMode = !isTagalogMode;  // Switch to English mode if Tagalog is false
+  }
 }
 
 function setLanguageMode() {
@@ -49,101 +53,110 @@ function handleQuickReply(reply) {
 
   switch (reply) {
     case "announcements":
-      message = "Makikita ang mga announcements sa Announcements / News section sa menu.";
+      message = isEnglishMode ? "You can find the announcements in the Announcements/News section in the menu." : "Makikita ang mga announcements sa Announcements / News section sa menu.";
       break;
     case "location":
-      message = "2435 Marigold St., Lakeview Homes Subd., Putatan, Muntinlupa City.";
+      message = isEnglishMode ? "2435 Marigold St., Lakeview Homes Subd., Putatan, Muntinlupa City." : "2435 Marigold St., Lakeview Homes Subd., Putatan, Muntinlupa City.";
       break;
     case "contact":
-      message = "Email: lakeviewintegratedschool@gmail.com o tumawag sa (02) 8999-0000.";
+      message = isEnglishMode ? "Email: lakeviewintegratedschool@gmail.com or call (02) 8999-0000." : "Email: lakeviewintegratedschool@gmail.com o tumawag sa (02) 8999-0000.";
       break;
     case "academic calendar":
-      message = "Ang school year ay nagsisimula tuwing Hunyo at nagtatapos ng Marso.";
+      message = isEnglishMode ? "The school year starts in June and ends in March." : "Ang school year ay nagsisimula tuwing Hunyo at nagtatapos ng Marso.";
       break;
     case "tuition":
-      message = "Ang tuition fees ay depende sa grade level. Makipag-ugnayan sa registrar para sa details.";
+      message = isEnglishMode ? "Tuition fees vary by grade level. Contact the registrar for details." : "Ang tuition fees ay depende sa grade level. Makipag-ugnayan sa registrar para sa details.";
       break;
     case "events":
-      message = "I-check ang Events section ng website para sa upcoming school activities.";
+      message = isEnglishMode ? "Check the Events section on the website for upcoming school activities." : "I-check ang Events section ng website para sa upcoming school activities.";
       break;
     case "teachers":
-      message = "Ang aming mga guro ay may malawak na karanasan at dedikasyon sa pagtuturo. Magtanong sa school office para sa listahan ng faculty.";
+      message = isEnglishMode ? "Our teachers are highly experienced and dedicated. Please contact the school office for the faculty list." : "Ang aming mga guro ay may malawak na karanasan at dedikasyon sa pagtuturo. Magtanong sa school office para sa listahan ng faculty.";
       break;
     default:
-      message = "Pasensya na, wala akong impormasyon tungkol diyan.";
+      message = isEnglishMode ? "Sorry, I don't have information about that." : "Pasensya na, wala akong impormasyon tungkol diyan.";
   }
   appendMessage("LIS Bot", message);
 }
 
 function getBotReply(message) {
   const currentHour = new Date().getHours();
-  let greeting = "Hello! How can I help you today?";
-  if (currentHour < 12) greeting = "Good morning! How can I help you?";
-  else if (currentHour < 18) greeting = "Good afternoon! How can I help you?";
-  else greeting = "Good evening! How can I help you?";
+  let greeting = isEnglishMode ? "Hello! How can I help you today?" : "Kamusta! Ano ang maitutulong ko sa iyo?";
+  if (currentHour < 12) greeting = isEnglishMode ? "Good morning! How can I help you?" : "Magandang umaga! Ano ang maitutulong ko sa iyo?";
+  else if (currentHour < 18) greeting = isEnglishMode ? "Good afternoon! How can I help you?" : "Magandang hapon! Ano ang maitutulong ko sa iyo?";
+  else greeting = isEnglishMode ? "Good evening! How can I help you?" : "Magandang gabi! Ano ang maitutulong ko sa iyo?";
 
   const msgLower = message.toLowerCase();
 
   // Handle "thank you" responses
   if (/(thank\s?you|thanks|salamat)/i.test(msgLower)) {
-    return "You're welcome! Nandito lang ako kung kailangan mo pa ng tulong.";
+    return isEnglishMode ? "You're welcome! Let me know if you need anything else." : "Walang anuman! Nandito lang ako kung kailangan mo pa ng tulong.";
   }
 
   // Handle greetings
-  if (["hi", "hello", "kumusta", "hey", "how are you", "kamusta ka"].some(word => msgLower.includes(word))) {
+  if (["hi", "hello", "how are you", "hey"].some(word => msgLower.includes(word))) {
     return greeting;
   }
 
-  // Regex to check for keyword matches (with fuzzy matching)
+  // Keywords mapping to categories
   const keywords = {
-    "announcement": ["announcement", "announcment", "notices", "updates", "news", "announcement page", "where can i find news", "find announcements", "how to find announcements", "where are announcements", "where to see announcements"],
-    "tuition": ["tuition", "tution", "fees", "bayarin", "cost", "how much is tuition", "how much for tuition", "fees details", "tuition fees", "how to check tuition"],
-    "admission": ["admission", "requirements", "enrollment", "school entry", "entry", "admission details", "how to enroll", "how to apply for admission"],
-    "events": ["events", "activities", "event", "school events", "activities", "upcoming events", "school activities", "how to view school events"],
-    "location": ["location", "address", "where", "saan", "where is", "located", "where's", "school location", "school address", "how to find school location", "where is the school"],
-    "teachers": ["teachers", "faculty", "staff", "instructors", "teacher info", "who are the teachers", "teachers list", "list of teachers", "faculty members"],
-    "holidays": ["holidays", "vacation", "break", "school break", "holiday schedule", "list of holidays", "when are the holidays"],
-    "motto": ["motto", "slogan", "school motto", "school mission", "our motto", "what is the school motto"],
-    "contact": ["contact", "email", "phone", "reach us", "contact info", "how to contact", "how to reach the school", "contact details", "how to get in touch", "contact email", "contact phone"],
-    "academic calendar": ["academic calendar", "school year", "year schedule", "school calendar", "academic schedule", "school timetable", "when does the school year start", "when is the school year"]
+    "announcement": ["announcement", "notices", "news", "updates", "events"],
+    "tuition": ["tuition", "fees", "cost", "how much", "payment", "charges"],
+    "admission": ["admission", "requirements", "enrollment", "apply", "process"],
+    "events": ["events", "activities", "upcoming", "school events"],
+    "location": ["location", "address", "where", "where's", "located"],
+    "teachers": ["teachers", "faculty", "staff", "instructors"],
+    "holidays": ["holidays", "vacation", "school breaks"],
+    "motto": ["motto", "school mission", "slogan"],
+    "contact": ["contact", "email", "phone", "reach us"],
+    "academic calendar": ["academic calendar", "school year", "year schedule", "school timetable"],
+    "programs": ["programs", "courses", "subjects", "curriculum"],
+    "clubs": ["clubs", "student organizations", "extracurricular", "sports"],
+    "facilities": ["facilities", "library", "gym", "classrooms", "labs"],
+    "resources": ["resources", "learning materials", "textbooks", "modules"],
+    "schedule": ["schedule", "class schedule", "school hours"],
+    "reminders": ["reminders", "alerts", "notifications"],
+    "registration": ["registration", "sign up", "register", "how to register"],
+    "fees": ["fees", "tuition fees", "cost breakdown"],
+    "transport": ["transport", "school bus", "commute"]
   };
 
-  // Check for matching keyword and respond accordingly
-  for (let key in keywords) {
-    // Check if any of the keyword variations is present anywhere in the message
-    if (keywords[key].some(keyword => msgLower.includes(keyword))) {
-      return generateResponse(key);
+  // Match the keyword and respond accordingly
+  for (let [category, keywordsArray] of Object.entries(keywords)) {
+    for (let keyword of keywordsArray) {
+      if (msgLower.includes(keyword)) {
+        return getResponseForCategory(category);
+      }
     }
   }
 
-  return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa announcements, enrollment, tuition, o school events.";
+  return isEnglishMode ? "Sorry, I didn't understand that. You can ask about admission, tuition, programs, or facilities." : "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa enrollment, tuition, programs, o facilities.";
 }
 
-function generateResponse(keyword) {
-  switch (keyword) {
-    case "announcement":
-      return "You can check the announcements in the 'Announcements' section of the website.";
-    case "tuition":
-      return "Please coordinate with the registrar for the updated tuition and other fees.";
-    case "admission":
-      return "For admission, please provide your birth certificate, report card, and a 2x2 photo. Enrollment typically happens from May to June.";
-    case "events":
-      return "Check the Events section of our website for the latest school activities and events.";
-    case "location":
-      return "We are located at 2435 Marigold St., Lakeview Homes, Putatan, Muntinlupa City.";
-    case "teachers":
-      return "For teacher contact info, please check with the school office or faculty directory.";
-    case "holidays":
-      return "You can check the Announcements section for the list of school holidays and breaks.";
-    case "motto":
-      return "Our school motto is: 'Education for a brighter future'.";
-    case "contact":
-      return "You can reach us via email at lakeviewintegratedschool@gmail.com or by calling (02) 8999-0000.";
-    case "academic calendar":
-      return "The school year typically runs from June to March.";
-    default:
-      return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa announcements, enrollment, tuition, o school events.";
-  }
+function getResponseForCategory(category) {
+  const responses = {
+    "announcement": isEnglishMode ? "You can find the announcements in the Announcements/News section in the menu." : "Makikita ang mga announcements sa Announcements / News section sa menu.",
+    "tuition": isEnglishMode ? "Tuition fees vary by grade level. Contact the registrar for details." : "Ang tuition fees ay depende sa grade level. Makipag-ugnayan sa registrar para sa details.",
+    "admission": isEnglishMode ? "For admission, bring your birth certificate, report card, and two 2x2 photos." : "Para sa admission, magdala ng birth certificate, report card, at 2x2 na larawan.",
+    "events": isEnglishMode ? "Check the Events section on the website for upcoming school activities." : "I-check ang Events section ng website para sa upcoming school activities.",
+    "location": isEnglishMode ? "The school is located at 2435 Marigold St., Lakeview Homes Subd., Putatan, Muntinlupa City." : "Nasa 2435 Marigold St., Lakeview Homes Subd., Putatan, Muntinlupa City kami.",
+    "teachers": isEnglishMode ? "Our teachers are highly experienced and dedicated. Please contact the school office for the faculty list." : "Ang aming mga guro ay may malawak na karanasan at dedikasyon sa pagtuturo. Magtanong sa school office para sa listahan ng faculty.",
+    "holidays": isEnglishMode ? "Check the Announcements section for a list of holidays and school breaks." : "I-check ang Announcements section para sa listahan ng mga holidays at school breaks.",
+    "motto": isEnglishMode ? "Our motto: 'Education for a brighter future.'" : "Ang aming motto: 'Education for a brighter future'.",
+    "contact": isEnglishMode ? "Email: lakeviewintegratedschool@gmail.com, Phone: (02) 8999-0000." : "Email: lakeviewintegratedschool@gmail.com, Phone: (02) 8999-0000.",
+    "academic calendar": isEnglishMode ? "The school year starts in June and ends in March." : "Ang school year ay nagsisimula tuwing Hunyo at nagtatapos ng Marso.",
+    "programs": isEnglishMode ? "We offer programs from Kindergarten to Senior High School." : "Nag-aalok kami ng programs mula Kindergarten hanggang Senior High School.",
+    "clubs": isEnglishMode ? "We have sports clubs, science clubs, art clubs, and more. Please ask the guidance office for details." : "May mga sports club, science club, art club, at marami pang iba. Magtanong sa guidance office.",
+    "facilities": isEnglishMode ? "Our school facilities include a library, science labs, computer labs, gym, and a clinic." : "Ang aming school facilities ay may library, science labs, computer labs, gym, at clinic.",
+    "resources": isEnglishMode ? "Learning materials are available in the Resources section of the website." : "Ang mga learning materials ay matatagpuan sa Resources section ng website.",
+    "schedule": isEnglishMode ? "Classes usually start at 8 AM and end at 4 PM." : "Ang classes ay kadalasang nagsisimula ng 8 AM at natatapos ng 4 PM.",
+    "reminders": isEnglishMode ? "Don't forget to check the Announcements for any important reminders." : "Don't forget to check the Announcements for any important reminders.",
+    "registration": isEnglishMode ? "To register, visit the Registration section on the website or contact the registrar." : "Para mag-register, pumunta sa Registration section ng website o makipag-ugnayan sa registrar.",
+    "fees": isEnglishMode ? "For tuition fees, contact the registrar for a full breakdown." : "Para sa tuition fees, makipag-ugnayan sa registrar para sa kumpletong detalye.",
+    "transport": isEnglishMode ? "We have a school shuttle service and public transportation options available. Check the Transport section for more details." : "We have a school shuttle service and public transportation options available. Check the Transport section for more details."
+  };
+
+  return responses[category] || (isEnglishMode ? "Sorry, I didn't understand that. You can ask about admission, tuition, programs, or facilities." : "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa enrollment, tuition, programs, o facilities.");
 }
 
 // Toggle open
@@ -153,27 +166,27 @@ chatbotToggleBtn.addEventListener('click', () => {
   chatbotContainer.setAttribute("aria-hidden", "false");
   chatbotInput.focus();
 
-  appendMessage("LIS Bot", "Kamusta! Piliin mo ang gusto mong malaman sa mga button sa ibaba.");
+  appendMessage("LIS Bot", isEnglishMode ? "Hello! What would you like to know? Choose from the buttons below." : "Kamusta! Piliin mo ang gusto mong malaman sa mga button sa ibaba.");
   displayQuickReplies();
 });
 
-// Toggle close
 chatbotCloseBtn.addEventListener('click', () => {
   chatbotContainer.classList.remove("active");
   setTimeout(() => chatbotContainer.style.display = 'none', 300);
   chatbotContainer.setAttribute("aria-hidden", "true");
 });
 
-// Submit
-chatbotForm.addEventListener('submit', e => {
+chatbotForm.addEventListener('submit', (e) => {
   e.preventDefault();
+
   const message = chatbotInput.value.trim();
-  if (!message) return;
+  if (message === '') return;
 
   appendMessage("You", message);
-  chatbotInput.value = "";
   const botReply = getBotReply(message);
   appendMessage("LIS Bot", botReply);
+  chatbotInput.value = '';
+  chatbotInput.focus();
 });
 
 loadLanguageMode();
