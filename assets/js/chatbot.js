@@ -96,14 +96,14 @@ function getBotReply(message) {
 
   // Fuzzy Matching (Levenshtein Distance) for better typo tolerance
   const keywords = {
-    "announcement": ["announcement", "announcment", "notices", "updates", "news"],
-    "tuition": ["tuition", "tution", "fees", "bayarin", "cost"],
-    "admission": ["admission", "requirements", "enrollment", "school entry", "entry"],
-    "events": ["events", "activities", "event", "school events", "activities"],
-    "location": ["location", "address", "where", "saan", "where is", "located", "where's"],
-    "teachers": ["teachers", "faculty", "staff", "instructors"],
-    "holidays": ["holidays", "vacation", "break", "school break"],
-    "motto": ["motto", "slogan", "school motto", "school mission"]
+    "announcement": ["announcement", "announcment", "notices", "updates", "news", "announcement page", "where can i find news", "find announcements"],
+    "tuition": ["tuition", "tution", "fees", "bayarin", "cost", "how much is tuition", "how much for tuition", "fees details"],
+    "admission": ["admission", "requirements", "enrollment", "school entry", "entry", "admission details", "how to enroll"],
+    "events": ["events", "activities", "event", "school events", "activities", "upcoming events", "school activities"],
+    "location": ["location", "address", "where", "saan", "where is", "located", "where's", "school location", "school address"],
+    "teachers": ["teachers", "faculty", "staff", "instructors", "teacher info", "who are the teachers", "teachers list"],
+    "holidays": ["holidays", "vacation", "break", "school break", "holiday schedule", "list of holidays"],
+    "motto": ["motto", "slogan", "school motto", "school mission", "our motto"]
   };
 
   for (let key in keywords) {
