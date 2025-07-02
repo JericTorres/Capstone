@@ -94,7 +94,7 @@ function getBotReply(message) {
     return greeting;
   }
 
-  // Fuzzy Matching (Levenshtein Distance) for better typo tolerance
+  // Regex to check if any keyword matches (with fuzzy matching)
   const keywords = {
     "announcement": ["announcement", "announcment", "notices", "updates", "news", "announcement page", "where can i find news", "find announcements"],
     "tuition": ["tuition", "tution", "fees", "bayarin", "cost", "how much is tuition", "how much for tuition", "fees details"],
@@ -103,9 +103,12 @@ function getBotReply(message) {
     "location": ["location", "address", "where", "saan", "where is", "located", "where's", "school location", "school address"],
     "teachers": ["teachers", "faculty", "staff", "instructors", "teacher info", "who are the teachers", "teachers list"],
     "holidays": ["holidays", "vacation", "break", "school break", "holiday schedule", "list of holidays"],
-    "motto": ["motto", "slogan", "school motto", "school mission", "our motto"]
+    "motto": ["motto", "slogan", "school motto", "school mission", "our motto"],
+    "contact": ["contact", "email", "phone", "reach us", "contact info", "how to contact", "how to reach the school", "contact details"],
+    "academic calendar": ["academic calendar", "school year", "year schedule", "school calendar", "academic schedule", "school timetable", "when does the school year start", "when is the school year"]
   };
 
+  // Check for keywords and respond
   for (let key in keywords) {
     if (keywords[key].some(keyword => msgLower.includes(keyword))) {
       return generateResponse(key);
@@ -133,6 +136,10 @@ function generateResponse(keyword) {
       return "You can check the Announcements section for the list of school holidays and breaks.";
     case "motto":
       return "Our school motto is: 'Education for a brighter future'.";
+    case "contact":
+      return "You can reach us via email at lakeviewintegratedschool@gmail.com or by calling (02) 8999-0000.";
+    case "academic calendar":
+      return "The school year typically runs from June to March.";
     default:
       return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa announcements, enrollment, tuition, o school events.";
   }
