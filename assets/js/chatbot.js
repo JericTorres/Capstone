@@ -48,9 +48,6 @@ function displayQuickReplies() {
     <button data-reply="motto">School Motto</button>
     <button data-reply="name">What's your name?</button>
     <button data-reply="how are you">How are you?</button>
-    <button data-reply="goodbye">Goodbye</button>
-    <button data-reply="help">Help</button>
-    <button data-reply="joke">Tell me a joke</button>
   `;
 }
 
@@ -114,15 +111,6 @@ function handleQuickReply(reply) {
     case "how are you":
       message = "I'm doing great, thank you for asking! How about you? Kamusta ka?";
       break;
-    case "goodbye":
-      message = "Goodbye! Salamat sa iyong mga katanungan! Huwag kalimutan na pwede kang magtanong anytime.";
-      break;
-    case "help":
-      message = "I'm here to assist with questions about programs, tuition, enrollment, and more. How can I help?";
-      break;
-    case "joke":
-      message = "Why don't skeletons fight each other? They don't have the guts!";
-      break;
     default:
       message = "Pasensya na, wala akong impormasyon tungkol diyan.";
   }
@@ -177,11 +165,6 @@ function getBotReply(message) {
     return "Check the Events section of our website for the latest school activities and events.";
   }
 
-  // Handle "jokes"
-  if (msgLower.includes("joke")) {
-    return "Why don't skeletons fight each other? They don't have the guts!";
-  }
-
   // Handle unknown queries
   return "Pasensya na, hindi ko maintindihan. Maaari kang magtanong tungkol sa enrollment, tuition, programs, o facilities.";
 }
@@ -204,7 +187,7 @@ chatbotCloseBtn.addEventListener('click', () => {
   chatbotContainer.setAttribute("aria-hidden", "true");
 });
 
-// Submit user input
+// Submit
 chatbotForm.addEventListener('submit', e => {
   e.preventDefault();
   const message = chatbotInput.value.trim();
